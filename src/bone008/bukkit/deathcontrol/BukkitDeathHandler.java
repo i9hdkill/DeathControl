@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import bone008.bukkit.deathcontrol.config.HandlingDescriptor;
-import bone008.bukkit.deathcontrol.hooks.HooksManager;
 import bone008.bukkit.deathcontrol.util.Message;
 import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
@@ -74,11 +73,6 @@ public class BukkitDeathHandler implements Listener {
 		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
 
 		log1.append(ply.getName()).append(" died (").append(Util.pluralNum(deathCauses.size(), "cause")).append(": ").append(Util.joinCollection(", ", deathCauses)).append(")");
-
-		if (HooksManager.shouldCancelDeathHandling(ply)) {
-			DeathControl.instance.log(Level.FINE, log1.append("; Other plugin has control of player!").toString());
-			return;
-		}
 
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_NOLIMITS) && !DeathControl.instance.config.isWorldAllowed(ply.getWorld().getName())) {
 			DeathControl.instance.log(Level.FINE, log1.append("; Not in a valid world!").toString());

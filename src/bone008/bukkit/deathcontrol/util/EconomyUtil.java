@@ -10,10 +10,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Method.MethodAccount;
-import com.nijikokun.register.payment.Methods;
-
 public final class EconomyUtil {
 
 	private EconomyUtil() {
@@ -60,12 +56,7 @@ public final class EconomyUtil {
 			throw new IllegalArgumentException("percentage out of range");
 
 		double currBalance;
-		Method m = getRegisterMethod();
-		if (m != null) {
-			MethodAccount acc = m.getAccount(plyName);
-			currBalance = acc.balance();
-		}
-		else if (vaultEconomy != null) {
+		if (vaultEconomy != null) {
 			currBalance = vaultEconomy.getBalance(plyName);
 		}
 		else {
@@ -97,12 +88,7 @@ public final class EconomyUtil {
 		if (cost <= 0)
 			return true;
 
-		Method m = getRegisterMethod();
-		if (m != null) {
-			MethodAccount acc = m.getAccount(plyName);
-			return acc.hasEnough(cost);
-		}
-		else if (vaultEconomy != null) {
+		if (vaultEconomy != null) {
 			return vaultEconomy.has(plyName, cost);
 		}
 		else {
@@ -121,14 +107,7 @@ public final class EconomyUtil {
 		if (cost <= 0)
 			return true;
 
-		Method m = getRegisterMethod();
-		if (m != null) {
-			MethodAccount acc = m.getAccount(plyName);
-			if (!acc.hasEnough(cost))
-				return false;
-			return acc.subtract(cost);
-		}
-		else if (vaultEconomy != null) {
+		if (vaultEconomy != null) {
 			return vaultEconomy.withdrawPlayer(plyName, cost).transactionSuccess();
 		}
 		else {
@@ -138,10 +117,7 @@ public final class EconomyUtil {
 	}
 
 	public static String formatMoney(double cost) {
-		Method m = getRegisterMethod();
-		if (m != null)
-			return m.format(cost);
-		else if (vaultEconomy != null)
+		if (vaultEconomy != null)
 			return vaultEconomy.format(cost);
 		else
 			return Double.toString(cost);
@@ -149,19 +125,6 @@ public final class EconomyUtil {
 
 	private static void logNotice(String pName) {
 		DeathControl.instance.log(Level.WARNING, "Couldn't calculate money for " + pName + " because no economy management plugin was found!");
-	}
-
-	/**
-	 * Attempts to get the active Register Method.
-	 * 
-	 * @return The Method, or null if there is no active one or Register is not loaded.
-	 */
-	private static Method getRegisterMethod() {
-		try {
-			return Methods.getMethod();
-		} catch (NoClassDefFoundError err) {
-		} // ugly solution, I know ...
-		return null;
 	}
 
 }
