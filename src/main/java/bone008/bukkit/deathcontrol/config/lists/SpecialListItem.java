@@ -17,7 +17,7 @@ import bone008.bukkit.deathcontrol.util.Util;
 public class SpecialListItem extends ListItem {
 
 	private static enum ItemProperty {
-		ID(Integer.class),
+		ID(String.class),
 		DATA(Integer.class),
 		AMOUNT(Integer.class),
 		ENCHANTMENT(ValueEnchantment.class),
@@ -63,7 +63,8 @@ public class SpecialListItem extends ListItem {
 		public boolean matches(ItemStack itemStack) {
 			switch (prop) {
 			case ID:
-				return operator.invokeInt(itemStack.getTypeId(), ((Integer) value).intValue());
+			  //TODO: Check if this actually works
+				return operator.invokeString(itemStack.getType().name(), (String) value);
 			case DATA:
 				return operator.invokeInt(itemStack.getDurability(), ((Integer) value).intValue());
 			case AMOUNT:

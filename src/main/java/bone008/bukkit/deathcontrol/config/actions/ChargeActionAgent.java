@@ -31,7 +31,7 @@ public class ChargeActionAgent extends ActionAgent {
 
 		double cost;
 		if (action.isPercentage) {
-			cost = EconomyUtil.calcCost(victim.getName(), action.money);
+			cost = EconomyUtil.calcCost(victim, action.money);
 			if (cost > action.capMax)
 				cost = action.capMax;
 			if (cost < action.capMin)
@@ -43,7 +43,7 @@ public class ChargeActionAgent extends ActionAgent {
 
 		context.setVariable("money-paid", EconomyUtil.formatMoney(cost));
 		context.setVariable("money-paid-raw", cost);
-		return (EconomyUtil.payCost(victim.getName(), cost) ? ActionResult.STANDARD : ActionResult.FAILED);
+		return (EconomyUtil.payCost(victim, cost) ? ActionResult.STANDARD : ActionResult.FAILED);
 	}
 
 	@Override

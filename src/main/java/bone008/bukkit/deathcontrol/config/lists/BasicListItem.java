@@ -54,11 +54,7 @@ public class BasicListItem extends ListItem {
 			throw new FormatException("invalid formatting of item '" + input + "'");
 
 		Material mat = null;
-		try {
-			mat = Material.getMaterial(Integer.parseInt(tokens.get(0)));
-		} catch (NumberFormatException e) {
-			mat = Material.matchMaterial(tokens.get(0).replace('-', '_'));
-		}
+		mat = Material.getMaterial(tokens.get(0));
 		if (mat == null)
 			throw new FormatException("could not find material '" + tokens.get(0) + "'");
 

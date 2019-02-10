@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import bone008.bukkit.deathcontrol.DeathControl;
@@ -45,22 +45,18 @@ public final class EconomyUtil {
 		}
 	}
 
-	public static double calcCost(Player ply, double percentage) {
-		return calcCost(ply.getName(), percentage);
-	}
-
-	public static double calcCost(String plyName, double percentage) {
-		if (plyName == null)
+	public static double calcCost(OfflinePlayer player, double percentage) {
+		if (player == null)
 			throw new IllegalArgumentException("null argument");
 		if (percentage < 0 || percentage > 1)
 			throw new IllegalArgumentException("percentage out of range");
 
 		double currBalance;
 		if (vaultEconomy != null) {
-			currBalance = vaultEconomy.getBalance(plyName);
+			currBalance = vaultEconomy.getBalance(player);
 		}
 		else {
-			logNotice(plyName);
+			logNotice(player);
 			return 0;
 		}
 		return currBalance * percentage;
@@ -72,46 +68,32 @@ public final class EconomyUtil {
 	 * 
 	 * @return true if the player has enough money or no economy management plugin was found, otherwise false
 	 */
-	public static boolean canAfford(Player ply, double cost) {
-		return canAfford(ply.getName(), cost);
-	}
-
-	/**
-	 * Checks if the given player has enough money to pay the given cost.<br>
-	 * Prints a warning if no way to manage economy was found.
-	 * 
-	 * @return true if the player has enough money or no economy management plugin was found, otherwise false
-	 */
-	public static boolean canAfford(String plyName, double cost) {
-		if (plyName == null)
+	public static boolean canAfford(OfflinePlayer player, double cost) {
+		if (player == null)
 			throw new IllegalArgumentException("null argument");
 		if (cost <= 0)
 			return true;
 
 		if (vaultEconomy != null) {
-			return vaultEconomy.has(plyName, cost);
+			return vaultEconomy.has(player, cost);
 		}
 		else {
-			logNotice(plyName);
+			logNotice(player);
 			return true;
 		}
 	}
 
-	public static boolean payCost(Player ply, double cost) {
-		return payCost(ply.getName(), cost);
-	}
-
-	public static boolean payCost(String plyName, double cost) {
-		if (plyName == null)
+	public static boolean payCost(OfflinePlayer player, double cost) {
+		if (player == null)
 			throw new IllegalArgumentException("null argument");
 		if (cost <= 0)
 			return true;
 
 		if (vaultEconomy != null) {
-			return vaultEconomy.withdrawPlayer(plyName, cost).transactionSuccess();
+			return vaultEconomy.withdrawPlayer(player, cost).transactionSuccess();
 		}
 		else {
-			logNotice(plyName);
+			logNotice(player);
 			return true;
 		}
 	}
@@ -123,8 +105,8 @@ public final class EconomyUtil {
 			return Double.toString(cost);
 	}
 
-	private static void logNotice(String pName) {
-		DeathControl.instance.log(Level.WARNING, "Couldn't calculate money for " + pName + " because no economy management plugin was found!");
+	private static void logNotice(OfflinePlayer player) {
+		DeathControl.instance.log(Level.WARNING, "Couldn't calculate money for " + player.getName() + " because no economy management plugin was found!");
 	}
 
 }
